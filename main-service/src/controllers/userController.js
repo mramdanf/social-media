@@ -5,14 +5,6 @@ const { bcryptCompare } = require('../utils/encriptions');
 require('dotenv').config();
 
 async function signUp(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res
-      .status(400)
-      .json({ error: true, errorMessage: JSON.stringify(errors.array()) });
-    return;
-  }
-
   try {
     const userData = req.body;
     const user = await userService.createUser(userData);
@@ -70,7 +62,29 @@ async function login(req, res) {
   }
 }
 
+async function update(req, res) {
+  try {
+    if (req._id !== req.body.userId) {
+      return res
+        .status(403)
+        .json({ error: true, errorMessage: 'Invalid user id' });
+    }
+
+    const result = await userService.updateUser(req.body);
+    if (!result.modifiedCount) {
+      return res
+        .status(404)
+        .json({ error: true, errorMessage: 'User not found' });
+    }
+
+    return res.status(200).json({ error: false, message: 'User updated' });
+  } catch (error) {
+    return res.status(500).json({ error: true, message: error.stoString() });
+  }
+}
+
 module.exports = {
   signUp,
-  login
+  login,
+  update
 };

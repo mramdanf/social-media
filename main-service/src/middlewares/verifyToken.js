@@ -11,7 +11,11 @@ async function verifyToken(req, res, next) {
   }
 
   try {
-    await jwt.verify(token, `${process.env.MAIN_SERVICE_JWT_PRIVATE_KEY}`);
+    const decoded = await jwt.verify(
+      token,
+      `${process.env.MAIN_SERVICE_JWT_PRIVATE_KEY}`
+    );
+    req._id = decoded._id;
     return next();
   } catch (error) {
     return res.status(401).json({ error: true, errorMessage: 'Invalid token' });

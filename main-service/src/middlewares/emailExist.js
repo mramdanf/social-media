@@ -12,8 +12,7 @@ async function checkEmailExist(req, res, next) {
   const { email } = req.body;
 
   const user = await userService.findUserByEmail(email);
-  console.log({ user });
-  if (user._id) {
+  if (user) {
     return res
       .status(409)
       .json({ error: true, errorMessage: 'Email already exist' });

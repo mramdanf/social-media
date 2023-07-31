@@ -14,7 +14,13 @@ function findUserByEmail(email) {
   return userModel.findOne({ email });
 }
 
+function updateUser(payload) {
+  const { id, ...rest } = payload;
+  return userModel.updateOne({ id }, { ...rest });
+}
+
 module.exports = {
   createUser,
-  findUserByEmail
+  findUserByEmail,
+  updateUser
 };
