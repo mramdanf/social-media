@@ -53,7 +53,7 @@ async function login(req, res) {
     const token = jwt.sign(
       { _id: user._id },
       `${process.env.MAIN_SERVICE_JWT_PRIVATE_KEY}`,
-      { expiresIn: 10 }
+      { expiresIn: '1h' }
     );
 
     res.status(200).json({
