@@ -10,6 +10,11 @@ async function createUser(user) {
   return userModel.create(userData);
 }
 
+function findUserByEmail(email) {
+  return userModel.findOne({ email });
+}
+
 module.exports = {
-  createUser
+  createUser,
+  findUserByEmail
 };

@@ -24,6 +24,7 @@
     "import/no-extraneous-dependencies": "off",
     "no-await-in-loop": "off",
     "strict": "off",
-    "no-continue": "off"
+    "no-continue": "off",
+    "no-underscore-dangle": "off"
   }
 }
