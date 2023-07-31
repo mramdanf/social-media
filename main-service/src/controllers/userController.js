@@ -8,7 +8,15 @@ async function signUp(req, res) {
   try {
     const userData = req.body;
     const user = await userService.createUser(userData);
-    res.status(200).json({ user });
+    res.status(200).json({
+      error: false,
+      message: 'Signup successfull!',
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: true, errorMessage: error.toString() });
   }
@@ -64,7 +72,7 @@ async function login(req, res) {
 
 async function update(req, res) {
   try {
-    if (req._id !== req.body.userId) {
+    if (req._id !== req.body.id) {
       return res
         .status(403)
         .json({ error: true, errorMessage: 'Invalid user id' });

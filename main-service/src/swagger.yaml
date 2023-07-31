@@ -1,0 +1,82 @@
+swagger: "2.0"
+info:
+  title: "Social Media API"
+  version: "1.0.0"
+host: "localhost:3000"
+tags:
+- name: "User"
+  description: "User management endpoints"
+paths:
+  /user/sign-up:
+    post:
+      tags:
+      - "User"
+      summary: "Register a user"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "User detail to be registered"
+        required: true
+        schema:
+          $ref: "#/definitions/SignUpPayload"
+      responses:
+        "200":
+          description: "happy path"
+          schema:
+            $ref: "#/definitions/SignUpResponse"
+        "400":
+          description: "Invalid input"
+        "500":
+          description: "Internal server error"
+definitions:
+  SignUpPayload:
+    type: "object"
+    properties:
+      fullName:
+        type: "string"
+        example: "Jhon Doe"
+      email:
+        type: "string"
+        example: "jhon.doe@gmail.com"
+      password:
+        type: "string"
+        example: "secret"
+  SignUpResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: "false"
+      message:
+        type: "string"
+        example: "Signup successfull!"
+      user:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            example: "64c83dfbb4b84bf3e29edaae"
+          fullName:
+            type: "string"
+            example: "Jhon Doe"
+          email:
+            type: "string"
+            example: "jhon.doe@gmail.com"
+          password:
+            type: "string"
+            example: "secret"
+  UserDetail:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "64c83dfbb4b84bf3e29edaae"
+      fullName:
+        type: "string"
+        example: "Jhon Doe"
+      email:
+        type: "string"
+        example: "jhon.doe@gmail.com"
+      password:
+        type: "string"
+        example: "secret"
