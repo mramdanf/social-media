@@ -1,4 +1,3 @@
-const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const userService = require('../services/userService');
 const { bcryptCompare } = require('../utils/encriptions');
@@ -23,14 +22,6 @@ async function signUp(req, res) {
 }
 
 async function login(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res
-      .status(400)
-      .json({ error: true, errorMessage: JSON.stringify(errors.array()) });
-    return;
-  }
-
   try {
     const userPayload = req.body;
     const user = await userService.findUserByEmail(userPayload.email);

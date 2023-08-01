@@ -1,15 +1,7 @@
-const { validationResult } = require('express-validator');
 const _get = require('lodash/get');
 const userService = require('../services/userService');
 
 async function checkEmailExist(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res
-      .status(400)
-      .json({ error: true, errorMessage: JSON.stringify(errors.array()) });
-  }
-
   const { email } = req.body;
 
   const user = await userService.findUserByEmail(email);

@@ -12,6 +12,7 @@ router.post(
   '/',
   body('content').notEmpty(),
   verifyTokenMiddleware,
+  checkValidationResultMiddleware,
   postController.createPost
 );
 router.put(
@@ -19,14 +20,15 @@ router.put(
   body('content').notEmpty(),
   body('id').isAlphanumeric().notEmpty(),
   verifyTokenMiddleware,
+  checkValidationResultMiddleware,
   postController.updateUserPost
 );
 router.get('/', verifyTokenMiddleware, postController.postsByUser);
 router.delete(
   '/:postId',
   param('postId').isAlphanumeric().notEmpty(),
-  checkValidationResultMiddleware,
   verifyTokenMiddleware,
+  checkValidationResultMiddleware,
   postController.deleteUserPost
 );
 
