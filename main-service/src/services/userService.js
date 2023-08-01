@@ -1,4 +1,6 @@
-const userModel = require('../models/user');
+const {
+  models: { User }
+} = require('../db/models');
 const { bcryptHas } = require('../utils/encriptions');
 
 async function createUser(user) {
@@ -7,20 +9,20 @@ async function createUser(user) {
     ...user,
     password: hasdedPassword
   };
-  return userModel.create(userData);
+  return User.create(userData);
 }
 
 function findUserByEmail(email) {
-  return userModel.findOne({ email });
+  return User.findOne({ email });
 }
 
 function updateUser(payload) {
   const { id, ...rest } = payload;
-  return userModel.updateOne({ _id: id }, { ...rest });
+  return User.updateOne({ _id: id }, { ...rest });
 }
 
 function addPostToUser(userId, postId) {
-  return userModel.updateOne({ _id: userId }, { post: postId });
+  return User.updateOne({ _id: userId }, { post: postId });
 }
 
 module.exports = {

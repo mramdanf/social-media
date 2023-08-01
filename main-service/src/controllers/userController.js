@@ -79,8 +79,17 @@ async function update(req, res) {
   }
 }
 
+async function followOtherUser(req, res) {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
 module.exports = {
   signUp,
   login,
-  update
+  update,
+  followOtherUser
 };

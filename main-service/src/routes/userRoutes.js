@@ -36,4 +36,12 @@ router.put(
   userController.update
 );
 
+router.put(
+  '/follow',
+  body('followedUserId').notEmpty().isAlphanumeric(),
+  verifyTokenMiddleware,
+  checkValidationResultMiddleware,
+  userController.followOtherUser
+);
+
 module.exports = router;
