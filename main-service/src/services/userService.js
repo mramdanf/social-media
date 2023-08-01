@@ -23,14 +23,9 @@ function addPostToUser(userId, postId) {
   return userModel.updateOne({ _id: userId }, { post: postId });
 }
 
-function getUserWithPost(userId) {
-  return userModel.findOne({ _id: userId }).populate('post');
-}
-
 module.exports = {
   createUser,
   findUserByEmail,
   updateUser,
-  addPostToUser,
-  getUserWithPost
+  addPostToUser
 };

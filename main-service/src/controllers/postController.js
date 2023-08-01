@@ -24,6 +24,19 @@ async function createPost(req, res) {
   }
 }
 
+async function postsByUser(req, res) {
+  try {
+    const userId = req._id;
+    const posts = await postService.getPostsByUser(userId);
+    return res.status(200).json({ error: false, posts });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: false, errorMessage: error.toString() });
+  }
+}
+
 module.exports = {
-  createPost
+  createPost,
+  postsByUser
 };

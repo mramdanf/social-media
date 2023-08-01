@@ -14,4 +14,6 @@ router.post(
   postController.createPost
 );
 
+router.get('/', verifyTokenMiddleware, postController.postsByUser);
+
 module.exports = router;
