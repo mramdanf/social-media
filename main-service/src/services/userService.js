@@ -2,6 +2,7 @@ const {
   models: { User }
 } = require('../db/models');
 const { bcryptHas } = require('../utils/encriptions');
+const postService = require('./postService');
 
 async function createUser(user) {
   const hasdedPassword = await bcryptHas(user.password);
@@ -22,8 +23,8 @@ function updateUser(payload) {
 }
 
 async function addPostToUser(userId, postId) {
-  const user = await User.findById(userId);
-  return User.updateOne({ _id: userId }, { post: [...user.post, postId] });
+  const user = await User.findById(userId).exec();
+  return User.updateOne({ _id: userId }, { posts: [...user.posts, postId] });
 }
 
 async function follow(userId, followedUserId) {
@@ -74,10 +75,46 @@ async function follow(userId, followedUserId) {
   }
 }
 
+async function userFeed(keywords, userId) {
+  const regexTemplate = new RegExp(`${keywords}`, 'gm');
+  const userOwnPosts = await postService.findUserPosts({
+    user: userId,
+    ...(keywords ? { content: regexTemplate } : {}) // search by keywords if any
+  });
+  const allPosts = [...userOwnPosts];
+
+  const userFollowingPosts = await User.findById(userId)
+    .select('fullName following')
+    .populate({
+      path: 'following',
+      select: 'fullName posts',
+      match: { posts: { $exists: true, $ne: [] } }, // exclude following with empty posts
+      populate: {
+        path: 'posts',
+        select: '_id content',
+        ...(keywords ? { match: { content: regexTemplate } } : {}), // search by keywords if any
+        populate: {
+          path: 'user',
+          select: '_id fullName'
+        }
+      }
+    });
+
+  // flatten post from follwed users
+  userFollowingPosts.following.forEach((following) => {
+    following.posts.forEach((post) => {
+      allPosts.push(post);
+    });
+  });
+
+  return allPosts;
+}
+
 module.exports = {
   createUser,
   findUserByEmail,
   updateUser,
   addPostToUser,
-  follow
+  follow,
+  userFeed
 };

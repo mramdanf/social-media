@@ -3,7 +3,7 @@ module.exports = (mongoose) => {
     fullName: String,
     email: String,
     password: String,
-    post: [
+    posts: [
       {
         type: mongoose.Schema.ObjectId,
         ref: 'Post'

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const _get = require('lodash/get');
 const userService = require('../services/userService');
 const { bcryptCompare } = require('../utils/encriptions');
 require('dotenv').config();
@@ -86,9 +87,23 @@ async function followOtherUser(req, res) {
   return res.status(code).json({ ...rest });
 }
 
+async function getUserFeed(req, res) {
+  try {
+    const keywords = _get(req, 'query.keywords');
+    const userId = req._id;
+    const posts = await userService.userFeed(keywords, userId);
+    return res.status(200).json({ error: false, posts });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, errorMessage: error.toString() });
+  }
+}
+
 module.exports = {
   signUp,
   login,
   update,
-  followOtherUser
+  followOtherUser,
+  getUserFeed
 };

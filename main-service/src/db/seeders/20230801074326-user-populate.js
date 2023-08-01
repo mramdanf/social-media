@@ -72,8 +72,13 @@ module.exports = {
       console.log(res.deletedCount);
       });
     */
-    models.User.deleteMany({ fullName: /\w+/ }).then((res) => {
-      // Prints "1"
-      console.log(res.deletedCount);
-    })
+    models.User.deleteMany({ fullName: /\w+/ })
+      .then((res) => {
+        // Prints "1"
+        console.log('deleted users: ', res.deletedCount);
+        return models.Post.deleteMany({ content: /\w+/ });
+      })
+      .then((res) => {
+        console.log('deleted posts: ', res.deletedCount);
+      })
 };

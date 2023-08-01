@@ -67,10 +67,18 @@ async function searchUserPosts(keywords, userId) {
   return allPosts;
 }
 
+function findUserPosts(options) {
+  return Post.find(options).select('_id content').populate({
+    path: 'user',
+    select: '_id fullName'
+  });
+}
+
 module.exports = {
   createPost,
   getPostsByUser,
   updatePost,
   deletePost,
-  searchUserPosts
+  searchUserPosts,
+  findUserPosts
 };

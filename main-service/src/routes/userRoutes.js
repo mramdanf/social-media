@@ -44,4 +44,6 @@ router.put(
   userController.followOtherUser
 );
 
+router.get('/feed', verifyTokenMiddleware, userController.getUserFeed);
+
 module.exports = router;
