@@ -72,13 +72,10 @@ async function login(req, res) {
 
 async function update(req, res) {
   try {
-    if (req._id !== req.body.id) {
-      return res
-        .status(403)
-        .json({ error: true, errorMessage: 'Invalid user id' });
-    }
-
-    const result = await userService.updateUser(req.body);
+    const result = await userService.updateUser({
+      id: req._id,
+      ...req.body
+    });
     if (!result.modifiedCount) {
       return res
         .status(404)
