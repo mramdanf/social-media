@@ -1,7 +1,8 @@
 const express = require('express');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 const verifyTokenMiddleware = require('../middlewares/verifyToken');
+const checkValidationResultMiddleware = require('../middlewares/checkValidationResult');
 
 const router = express.Router();
 
@@ -21,5 +22,12 @@ router.put(
   postController.updateUserPost
 );
 router.get('/', verifyTokenMiddleware, postController.postsByUser);
+router.delete(
+  '/:postId',
+  param('postId').isAlphanumeric().notEmpty(),
+  checkValidationResultMiddleware,
+  verifyTokenMiddleware,
+  postController.deleteUserPost
+);
 
 module.exports = router;

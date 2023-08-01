@@ -13,8 +13,14 @@ function updatePost(payload) {
   return postModel.updateOne({ _id: id, user: userId }, { ...rest });
 }
 
+function deletePost(payload) {
+  const { id, userId } = payload;
+  return postModel.deleteOne({ _id: id, user: userId });
+}
+
 module.exports = {
   createPost,
   getPostsByUser,
-  updatePost
+  updatePost,
+  deletePost
 };

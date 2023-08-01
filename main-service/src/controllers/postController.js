@@ -66,8 +66,34 @@ async function updateUserPost(req, res) {
   }
 }
 
+async function deleteUserPost(req, res) {
+  try {
+    const userId = req._id;
+    const { postId } = req.params;
+    const result = await postService.deletePost({ id: postId, userId });
+
+    if (!result.modifiedCount) {
+      return res.status(404).json({
+        error: false,
+        message: 'Post not found'
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      message: `Post with id ${postId} successfully deleted`
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      errorMessage: error.toString()
+    });
+  }
+}
+
 module.exports = {
   createPost,
   postsByUser,
-  updateUserPost
+  updateUserPost,
+  deleteUserPost
 };
