@@ -25,7 +25,7 @@ router.post(
 
 router.put(
   '/update',
-  body('userId').notEmpty(),
+  body('id').notEmpty(),
   body('fullName').notEmpty(),
   body('email').isEmail().notEmpty(),
   emailExistMiddleware,

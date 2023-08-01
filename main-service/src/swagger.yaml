@@ -21,14 +21,89 @@ paths:
           $ref: "#/definitions/SignUpPayload"
       responses:
         "200":
-          description: "happy path"
+          description: "User successfully registered"
           schema:
             $ref: "#/definitions/SignUpResponse"
         "400":
           description: "Invalid input"
         "500":
           description: "Internal server error"
+  /user/login:
+    post:
+      tags:
+      - "User"
+      summary: "Log user in"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "User credential"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: "string"
+              example: "jhon.doe@gmail.com"
+            password:
+              type: "string"
+              example: "secret"
+      responses:
+        "200":
+          description: "User successfully logged in"
+          schema:
+            $ref: "#/definitions/LoginResponse"
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid credential or invalid token"
+        "500":
+          description: "Internal server error"
+  /user/update:
+    put:
+      tags:
+      - "User"
+      summary: "Update user profile"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "New user data"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateUserPayload"
+      responses:
+        "200":
+          description: "User data successfully updated"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "User updated"
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "500":
+          description: "Internal server error"
 definitions:
+  UpdateUserPayload:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "64c83dfbb4b84bf3e29edaae"
+      fullName:
+        type: "string"
+        example: "Jhon Doe"
+      email:
+        type: "string"
+        example: "jhon.doe@gmail.com"
+      password:
+        type: "string"
+        example: "secret"
   SignUpPayload:
     type: "object"
     properties:
@@ -80,3 +155,24 @@ definitions:
       password:
         type: "string"
         example: "secret"
+  LoginResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: "false"
+      message:
+        type: "string"
+        example: "Signup successfull!"
+      user:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            example: "64c83dfbb4b84bf3e29edaae"
+          fullName:
+            type: "string"
+            example: "Jhon Doe"
+          token:
+            type: "string"
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGM4MjdmZWUxOTk5M2NlNDk1ZGY0ZTYiLCJpYXQiOjE2OTA4NDI0OTgsImV4cCI6MTY5MDg0NjA5OH0.ctiAZajCcntq0suDSzcly4xNizlEmqJlxAJA7emkEOA"

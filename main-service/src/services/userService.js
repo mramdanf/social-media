@@ -16,7 +16,7 @@ function findUserByEmail(email) {
 
 function updateUser(payload) {
   const { id, ...rest } = payload;
-  return userModel.updateOne({ id }, { ...rest });
+  return userModel.updateOne({ _id: id }, { ...rest });
 }
 
 module.exports = {

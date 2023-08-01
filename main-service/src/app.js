@@ -19,7 +19,13 @@ const swaggerDocument = YAML.parse(file);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRouter);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    customSiteTitle: 'Social Media App Service'
+  })
+);
 
 // configure mongoose
 const mongodbPort = process.env.MONGO_DB_PORT || 27017;

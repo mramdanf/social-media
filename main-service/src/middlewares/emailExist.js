@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const _get = require('lodash/get');
 const userService = require('../services/userService');
 
 async function checkEmailExist(req, res, next) {
@@ -12,7 +13,19 @@ async function checkEmailExist(req, res, next) {
   const { email } = req.body;
 
   const user = await userService.findUserByEmail(email);
-  if (user) {
+  if (!user) {
+    return next();
+  }
+
+  const prevUserId = _get(req, 'body.id');
+  const foundUserId = _get(user, 'id');
+
+  // previous user data, should be valid
+  if (prevUserId === foundUserId) {
+    return next();
+  }
+
+  if (user && prevUserId !== foundUserId) {
     return res
       .status(409)
       .json({ error: true, errorMessage: 'Email already exist' });
