@@ -1,5 +1,5 @@
 const express = require('express');
-const { body, param, query } = require('express-validator');
+const { body, param } = require('express-validator');
 
 const verifyTokenMiddleware = require('../middlewares/verifyToken');
 const checkValidationResultMiddleware = require('../middlewares/checkValidationResult');
@@ -22,14 +22,6 @@ router.put(
   verifyTokenMiddleware,
   checkValidationResultMiddleware,
   postController.updateUserPost
-);
-router.get('/', verifyTokenMiddleware, postController.postsByUser);
-router.get(
-  '/search',
-  query('keywords').notEmpty(),
-  verifyTokenMiddleware,
-  checkValidationResultMiddleware,
-  postController.searchUserPosts
 );
 router.delete(
   '/:postId',

@@ -17,18 +17,6 @@ async function createPost(req, res) {
   }
 }
 
-async function postsByUser(req, res) {
-  try {
-    const userId = req._id;
-    const posts = await postService.getPostsByUser(userId);
-    return res.status(200).json({ error: false, posts });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ error: false, errorMessage: error.toString() });
-  }
-}
-
 async function updateUserPost(req, res) {
   try {
     const result = await postService.updatePost({
@@ -77,23 +65,8 @@ async function deleteUserPost(req, res) {
   }
 }
 
-async function searchUserPosts(req, res) {
-  try {
-    const userId = req._id;
-    const { keywords } = req.query;
-    const posts = await postService.searchUserPosts(keywords, userId);
-    return res.status(200).json({ error: false, posts });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ error: true, errorMessage: error.toString() });
-  }
-}
-
 module.exports = {
   createPost,
-  postsByUser,
   updateUserPost,
-  deleteUserPost,
-  searchUserPosts
+  deleteUserPost
 };
