@@ -3,11 +3,19 @@ module.exports = (mongoose) => {
     fullName: String,
     email: String,
     password: String,
-    post: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Post'
-    }
+    post: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Post'
+      }
+    ],
+    following: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      }
+    ]
   });
-  const Ramdan = mongoose.model('User', newSchema);
-  return Ramdan;
+  const User = mongoose.model('User', newSchema);
+  return User;
 };

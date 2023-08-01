@@ -1,5 +1,26 @@
 'use strict';
 
+const { faker } = require('@faker-js/faker');
+
+const fakerUsers = [...Array(100)].map(() => ({
+  fullName: faker.person.fullName(),
+  email: faker.internet.email().toString().toLowerCase(),
+  password: '$2a$10$rX.2qi9WgfyRK4Xl.z4J7.Qt901y6yy87Mk2T5gxEKdxG.dnASH7m'
+}));
+const dummyUsers = [
+  ...fakerUsers,
+  {
+    fullName: 'azfar shidqi',
+    email: 'azfar@test.com',
+    password: '$2a$10$rX.2qi9WgfyRK4Xl.z4J7.Qt901y6yy87Mk2T5gxEKdxG.dnASH7m'
+  },
+  {
+    fullName: 'lisda adistinai',
+    email: 'lisda@test.com',
+    password: '$2a$10$lSYtyLd7ZUVcuW2upBWthOEKKavarPLVIOQTm53DOICd1LEGE37j.'
+  }
+];
+
 module.exports = {
   up: (models) =>
     /*
@@ -20,28 +41,15 @@ module.exports = {
       console.log(res.insertedCount);
     });
     */
-    models.User.bulkWrite([
-      {
+    models.User.bulkWrite(
+      dummyUsers.map((u) => ({
         insertOne: {
           document: {
-            fullName: 'azfar shidqi',
-            email: 'azfar@test.com',
-            password:
-              '$2a$10$rX.2qi9WgfyRK4Xl.z4J7.Qt901y6yy87Mk2T5gxEKdxG.dnASH7m' // secret
+            ...u
           }
         }
-      },
-      {
-        insertOne: {
-          document: {
-            fullName: 'lisda adistinai',
-            email: 'lisda@test.com',
-            password:
-              '$2a$10$lSYtyLd7ZUVcuW2upBWthOEKKavarPLVIOQTm53DOICd1LEGE37j.' // lisda
-          }
-        }
-      }
-    ]).then((res) => {
+      }))
+    ).then((res) => {
       // Prints "1"
       console.log(res.insertedCount);
     }),
@@ -64,22 +72,7 @@ module.exports = {
       console.log(res.deletedCount);
       });
     */
-    models.User.bulkWrite([
-      {
-        deleteOne: {
-          filter: {
-            email: 'azfar@test.com'
-          }
-        }
-      },
-      {
-        deleteOne: {
-          filter: {
-            email: 'lisda@test.com'
-          }
-        }
-      }
-    ]).then((res) => {
+    models.User.deleteMany({ fullName: /\w+/ }).then((res) => {
       // Prints "1"
       console.log(res.deletedCount);
     })

@@ -29,6 +29,7 @@
     "no-await-in-loop": "off",
     "strict": "off",
     "no-continue": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "node/no-unpublished-require": "off"
   }
 }

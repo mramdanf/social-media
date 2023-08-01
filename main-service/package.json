@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "start:watch": "nodemon src/app.js",
-    "db:reset": "npx mongoosejs-cli db:seed:undo:all"
+    "db:reset": "npx mongoosejs-cli db:seed:undo:all && npx mongoosejs-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-node": "^4.1.0",

@@ -80,11 +80,10 @@ async function update(req, res) {
 }
 
 async function followOtherUser(req, res) {
-  try {
-    
-  } catch (error) {
-    
-  }
+  const userId = req._id;
+  const { followedUserId } = req.body;
+  const { code, ...rest } = await userService.follow(userId, followedUserId);
+  return res.status(code).json({ ...rest });
 }
 
 module.exports = {
