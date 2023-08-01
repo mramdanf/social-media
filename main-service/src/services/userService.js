@@ -21,8 +21,9 @@ function updateUser(payload) {
   return User.updateOne({ _id: id }, { ...rest });
 }
 
-function addPostToUser(userId, postId) {
-  return User.updateOne({ _id: userId }, { post: postId });
+async function addPostToUser(userId, postId) {
+  const user = await User.findById(userId);
+  return User.updateOne({ _id: userId }, { post: [...user.post, postId] });
 }
 
 async function follow(userId, followedUserId) {
