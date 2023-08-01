@@ -19,8 +19,13 @@ function updateUser(payload) {
   return userModel.updateOne({ _id: id }, { ...rest });
 }
 
+function addPostToUser(userId, postId) {
+  return userModel.updateOne({ _id: userId }, { post: postId });
+}
+
 module.exports = {
   createUser,
   findUserByEmail,
-  updateUser
+  updateUser,
+  addPostToUser
 };

@@ -9,6 +9,7 @@ const YAML = require('yamljs');
 const app = express();
 
 const userRouter = require('./routes/userRoutes');
+const postRouter = require('./routes/postRoutes');
 
 const file = fs.readFileSync(
   path.join(process.cwd(), 'src', 'swagger.yaml'),
@@ -19,6 +20,7 @@ const swaggerDocument = YAML.parse(file);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 app.use(
   '/api-docs',
   swaggerUi.serve,
