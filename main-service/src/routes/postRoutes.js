@@ -13,7 +13,13 @@ router.post(
   verifyTokenMiddleware,
   postController.createPost
 );
-
+router.put(
+  '/',
+  body('content').notEmpty(),
+  body('id').isAlphanumeric().notEmpty(),
+  verifyTokenMiddleware,
+  postController.updateUserPost
+);
 router.get('/', verifyTokenMiddleware, postController.postsByUser);
 
 module.exports = router;

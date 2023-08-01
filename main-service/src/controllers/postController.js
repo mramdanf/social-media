@@ -36,7 +36,38 @@ async function postsByUser(req, res) {
   }
 }
 
+async function updateUserPost(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(400)
+      .json({ error: true, errorMessage: JSON.stringify(errors.array()) });
+  }
+
+  try {
+    const result = await postService.updatePost({
+      userId: req._id,
+      ...req.body
+    });
+    if (!result.modifiedCount) {
+      return res
+        .status(404)
+        .json({ error: true, errorMessage: 'Post not found.' });
+    }
+
+    return res.status(200).json({
+      error: false,
+      message: `Post with id ${req.body.id} successfully updated`
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: false, errorMessage: error.toString() });
+  }
+}
+
 module.exports = {
   createPost,
-  postsByUser
+  postsByUser,
+  updateUserPost
 };
