@@ -91,8 +91,21 @@ async function update(req, res) {
   }
 }
 
+async function posts(req, res) {
+  try {
+    const userId = req._id;
+    const userWithPost = await userService.getUserWithPost(userId);
+    return res.status(200).json({ error: false, user: userWithPost });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: false, errorMessage: error.toString() });
+  }
+}
+
 module.exports = {
   signUp,
   login,
-  update
+  update,
+  posts
 };

@@ -33,4 +33,6 @@ router.put(
   userController.update
 );
 
+router.get('/posts', verifyTokenMiddleware, userController.posts);
+
 module.exports = router;
