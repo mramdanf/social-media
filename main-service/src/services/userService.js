@@ -1,3 +1,4 @@
+const _get = require('lodash/get');
 const {
   models: { User }
 } = require('../db/models');
@@ -77,10 +78,12 @@ async function follow(userId, followedUserId) {
 
 async function userFeed(keywords, userId) {
   const regexTemplate = new RegExp(`${keywords}`, 'gm');
+
   const userOwnPosts = await postService.findUserPosts({
     user: userId,
     ...(keywords ? { content: regexTemplate } : {}) // search by keywords if any
   });
+
   const allPosts = [...userOwnPosts];
 
   const userFollowingPosts = await User.findById(userId)
@@ -100,12 +103,14 @@ async function userFeed(keywords, userId) {
       }
     });
 
-  // flatten post from follwed users
-  userFollowingPosts.following.forEach((following) => {
-    following.posts.forEach((post) => {
-      allPosts.push(post);
+  if (_get(userFollowingPosts, 'following')) {
+    // flatten post from follwed users
+    userFollowingPosts.following.forEach((following) => {
+      following.posts.forEach((post) => {
+        allPosts.push(post);
+      });
     });
-  });
+  }
 
   return allPosts;
 }
