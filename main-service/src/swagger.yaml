@@ -385,6 +385,9 @@ definitions:
       email:
         type: "string"
         example: "jhon.doe@gmail.com"
+      password:
+        type: "string"
+        example: "secret"
   LikedCommentedByArray:
     type: "array"
     items:

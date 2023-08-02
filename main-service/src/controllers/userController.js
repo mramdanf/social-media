@@ -96,11 +96,9 @@ async function getUserFeed(req, res) {
     const keywords = _get(req, 'query.keywords');
     const userId = req._id;
     const posts = await userService.userFeed(keywords, userId);
-    return res.status(200).json({ error: false, posts });
+    return res.status(200).json(endpointSuccessResponse({ posts }));
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: true, errorMessage: error.toString() });
+    return res.status(500).json(endpointErrorResponse(error.toString()));
   }
 }
 
