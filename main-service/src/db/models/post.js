@@ -5,7 +5,13 @@ module.exports = (mongoose) => {
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User'
-    }
+    },
+    likedBy: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      }
+    ]
   });
   const Post = mongoose.model('Post', newSchema);
   return Post;

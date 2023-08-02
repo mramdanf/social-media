@@ -23,9 +23,43 @@ function findUserPosts(options) {
   });
 }
 
+async function likeAPost(postId, userId) {
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      return {
+        error: true,
+        errorMessage: 'Post not found',
+        message: '',
+        code: 404
+      };
+    }
+
+    await Post.updateOne(
+      { _id: postId },
+      { likedBy: [...post.likedBy, userId] }
+    );
+
+    return {
+      error: false,
+      message: 'Post liked.',
+      errorMessage: '',
+      code: 200
+    };
+  } catch (error) {
+    return {
+      error: true,
+      errorMessage: error.toString(),
+      message: '',
+      code: 500
+    };
+  }
+}
+
 module.exports = {
   createPost,
   updatePost,
   deletePost,
-  findUserPosts
+  findUserPosts,
+  likeAPost
 };

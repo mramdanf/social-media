@@ -30,5 +30,12 @@ router.delete(
   checkValidationResultMiddleware,
   postController.deleteUserPost
 );
+router.put(
+  '/like',
+  body('postId').notEmpty(),
+  checkValidationResultMiddleware,
+  verifyTokenMiddleware,
+  postController.like
+);
 
 module.exports = router;

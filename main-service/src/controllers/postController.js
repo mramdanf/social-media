@@ -65,8 +65,20 @@ async function deleteUserPost(req, res) {
   }
 }
 
+async function like(req, res) {
+  const userId = req._id;
+  const { postId } = req.body;
+
+  const { error, errorMessage, message, code } = await postService.likeAPost(
+    postId,
+    userId
+  );
+  return res.status(code).json({ error, errorMessage, message });
+}
+
 module.exports = {
   createPost,
   updateUserPost,
-  deleteUserPost
+  deleteUserPost,
+  like
 };
