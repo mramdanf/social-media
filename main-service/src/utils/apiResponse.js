@@ -19,6 +19,16 @@ function endpointResponse(response) {
   };
 }
 
+function endpointErrorResponse(message, code = 500) {
+  return endpointErrorResponse({ error: true, errorMessgae: message, code });
+}
+
+function endpointSuccessResponse(message, code = 200) {
+  return endpointErrorResponse({ error: true, errorMessgae: message, code });
+}
+
 module.exports = {
-  endpointResponse
+  endpointResponse,
+  endpointErrorResponse,
+  endpointSuccessResponse
 };

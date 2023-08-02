@@ -12,7 +12,7 @@ async function signUp(req, res) {
       error: false,
       message: 'Signup successfull!',
       user: {
-        id: user._id,
+        _id: user._id,
         fullName: user.fullName,
         email: user.email
       }
@@ -52,7 +52,7 @@ async function login(req, res) {
       error: false,
       message: 'login success!',
       user: {
-        id: user._id,
+        _id: user._id,
         fullName: user.fullName,
         token
       }

@@ -6,6 +6,8 @@ host: "localhost:3000"
 tags:
 - name: "User"
   description: "User management endpoints"
+- name: "Post"
+  description: "Post management endpoints"
 paths:
   /user/sign-up:
     post:
@@ -70,6 +72,11 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/UpdateUserPayload"
+      - in: "header"
+        name: "token"
+        description: "User token obtained after logged in"
+        required: true
+        type: "string"
       responses:
         "200":
           description: "User data successfully updated"
@@ -88,22 +95,252 @@ paths:
           description: "Invalid token or invalid user credential"
         "500":
           description: "Internal server error"
+  /user/follow:
+    put:
+      tags:
+      - "User"
+      summary: "Follow other user"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            followedUserId:
+              type: "string"
+              example: "64c9c3f023516c516d3a0118"
+      - in: "header"
+        name: "token"
+        description: "User token obtained after logged in"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "User data successfully updated"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "User updated"
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "404":
+          description: "No followed user found"
+          schema:
+            $ref: "#/definitions/NoFollowedUserFoundResponse"
+        "409":
+          description: "Re-follow same user is not allowed"
+          schema:
+            $ref: "#/definitions/RefollowSameUserResponse"
+        "500":
+          description: "Internal server error"
+  /user/feed:
+    get:
+      tags:
+      - "User"
+      summary: "User posts feed"
+      parameters:
+      - in: "header"
+        name: "token"
+        description: "User token obtained after logged in"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "User data successfully updated"
+          schema:
+            $ref: "#/definitions/UserFeedResponse"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "500":
+          description: "Internal server error"
+  /posts:
+    post:
+      tags:
+      - "Post"
+      summary: "Create a user post"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Post data"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            content:
+              type: "string"
+              example: "Hey there this is my first post"
+      - in: "header"
+        name: "token"
+        description: "Token obtained after logged in"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Post created successfully"
+          schema:
+            $ref: "#/definitions/CreatePostResponse"
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "500":
+          description: "Internal server error"
+    put:
+      tags:
+      - "Post"
+      summary: "Update user post"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "New post data"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            content:
+              type: "string"
+              example: "Hey there this is my first post"
+      - in: "header"
+        name: "token"
+        description: "Token obtained after logged in"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Post created successfully"
+          schema:
+            $ref: "#/definitions/UpdatePostResponse"
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "500":
+          description: "Internal server error"
+  /posts/{postId}:
+    delete:
+      tags:
+      - "Post"
+      summary: "Delete user post"
+      parameters:
+      - in: "path"
+        name: "postId"
+        type: "string"
+        description: "New post data"
+        required: true
+      - in: "header"
+        name: "token"
+        description: "Token obtained after logged in"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Post created successfully"
+          schema:
+            $ref: "#/definitions/DeletePostResponse"
+        "404":
+          description: "Post not found"
+          schema:
+            $ref: "#/definitions/PostNotFoundResponse"
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "500":
+          description: "Internal server error"
+  /posts/like:
+    put:
+      tags:
+      - "Post"
+      summary: "Like a post"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "liked postId"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            postId:
+              type: "string"
+              example: "64c9c3f023516c516d3a0118"
+      - in: "header"
+        name: "token"
+        description: "Token obtained after logged in"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Post created successfully"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "Successfully liked a post."
+        "404":
+          description: "Post not found"
+          schema:
+            $ref: "#/definitions/PostNotFoundResponse"
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "500":
+          description: "Internal server error"
+  /posts/comment:
+    post:
+      tags:
+      - "Post"
+      summary: "Add comment on a post"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "liked postId"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            postId:
+              type: "string"
+              example: "64c9c3f023516c516d3a0118"
+            content:
+              type: "string"
+              example: "this post is so cool!"
+      - in: "header"
+        name: "token"
+        description: "Token obtained after logged in"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Post created successfully"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "Comment added."
+        "400":
+          description: "Invalid input"
+        "401":
+          description: "Invalid token or invalid user credential"
+        "500":
+          description: "Internal server error"
 definitions:
-  UpdateUserPayload:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-        example: "64c83dfbb4b84bf3e29edaae"
-      fullName:
-        type: "string"
-        example: "Jhon Doe"
-      email:
-        type: "string"
-        example: "jhon.doe@gmail.com"
-      password:
-        type: "string"
-        example: "secret"
   SignUpPayload:
     type: "object"
     properties:
@@ -126,24 +363,11 @@ definitions:
         type: "string"
         example: "Signup successfull!"
       user:
-        type: "object"
-        properties:
-          id:
-            type: "string"
-            example: "64c83dfbb4b84bf3e29edaae"
-          fullName:
-            type: "string"
-            example: "Jhon Doe"
-          email:
-            type: "string"
-            example: "jhon.doe@gmail.com"
-          password:
-            type: "string"
-            example: "secret"
+        $ref: "#/definitions/UserDetail"
   UserDetail:
     type: "object"
     properties:
-      id:
+      _id:
         type: "string"
         example: "64c83dfbb4b84bf3e29edaae"
       fullName:
@@ -152,9 +376,104 @@ definitions:
       email:
         type: "string"
         example: "jhon.doe@gmail.com"
-      password:
+  UpdateUserPayload:
+    type: "object"
+    properties:
+      fullName:
         type: "string"
-        example: "secret"
+        example: "Jhon Doe"
+      email:
+        type: "string"
+        example: "jhon.doe@gmail.com"
+  LikedCommentedByArray:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+          example: "64c9c3bba2ff9d64966bc180"
+        author:
+          $ref: "#/definitions/UserDetail"
+  PostDetail:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        example: "64c9c3f023516c516d3a0118"
+      content:
+        type: "string"
+        example: "hi there lisdas post is here"
+      user:
+        $ref: "#/definitions/UserDetail"
+      likedBy:
+        $ref: "#/definitions/LikedCommentedByArray"
+      comments:
+        $ref: "#/definitions/LikedCommentedByArray"
+  UserFeedResponse:
+    type: "object"
+    properties:
+      error: 
+        type: "boolean"
+        example: "false"
+      posts:
+        type: "array"
+        items:
+          $ref: "#/definitions/PostDetail"
+  NoFollowedUserFoundResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: true
+      errorMessage:
+        type: "string"
+        example: "No followed user found"
+  RefollowSameUserResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: true
+      errorMessage:
+        type: "string"
+        example: "Re-follow same user not allowed."
+  CreatePostResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: false
+      message:
+        type: "string"
+        example: "Post created"
+  UpdatePostResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: false
+      message:
+        type: "string"
+        example: "Post with id 64c9c3bba2ff9d64966bc180 successfully updated"
+  DeletePostResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: false
+      message:
+        type: "string"
+        example: "Post with id 64c9c3bba2ff9d64966bc180 successfully deleted"
+  PostNotFoundResponse:
+    type: "object"
+    properties:
+      error:
+        type: "boolean"
+        example: true
+      errorMessage:
+        type: "string"
+        example: "Post not found"
   LoginResponse:
     type: "object"
     properties:
@@ -165,14 +484,10 @@ definitions:
         type: "string"
         example: "Signup successfull!"
       user:
-        type: "object"
-        properties:
-          id:
-            type: "string"
-            example: "64c83dfbb4b84bf3e29edaae"
-          fullName:
-            type: "string"
-            example: "Jhon Doe"
-          token:
-            type: "string"
-            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGM4MjdmZWUxOTk5M2NlNDk1ZGY0ZTYiLCJpYXQiOjE2OTA4NDI0OTgsImV4cCI6MTY5MDg0NjA5OH0.ctiAZajCcntq0suDSzcly4xNizlEmqJlxAJA7emkEOA"
+        allOf:
+          - $ref: "#/definitions/UserDetail"
+          - type: "object"
+            properties:
+              token:
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cC..."

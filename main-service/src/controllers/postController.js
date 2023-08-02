@@ -1,7 +1,11 @@
 const postService = require('../services/postService');
 const userService = require('../services/userService');
 const commentService = require('../services/commentService');
-const { endpointResponse } = require('../utils/misc');
+const {
+  endpointResponse,
+  endpointErrorResponse,
+  endpointSuccessResponse
+} = require('../utils/apiResponse');
 
 async function createPost(req, res) {
   try {
@@ -9,9 +13,7 @@ async function createPost(req, res) {
     const post = req.body;
     const newPost = await postService.createPost(post, userId);
     await userService.addPostToUser(userId, newPost._id);
-    return res
-      .status(200)
-      .json({ error: false, message: 'Post created.', post: newPost });
+    return res.status(200).json({ error: false, message: 'Post created.' });
   } catch (error) {
     return res
       .status(500)
@@ -49,16 +51,14 @@ async function deleteUserPost(req, res) {
     const result = await postService.deletePost({ id: postId, userId });
 
     if (!result.deletedCount) {
-      return res.status(404).json({
-        error: false,
-        message: 'Post not found'
-      });
+      return res.status(404).json(endpointErrorResponse('Post not found', 404));
     }
 
-    return res.status(200).json({
-      error: false,
-      message: `Post with id ${postId} successfully deleted`
-    });
+    return res
+      .status(200)
+      .json(
+        endpointSuccessResponse(`Post with id ${postId} successfully deleted`)
+      );
   } catch (error) {
     return res.status(500).json({
       error: true,

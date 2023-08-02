@@ -37,7 +37,7 @@ router.put(
   verifyTokenMiddleware,
   postController.like
 );
-router.put(
+router.post(
   '/comment',
   body('content').notEmpty(),
   body('postId').notEmpty(),

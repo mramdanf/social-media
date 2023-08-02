@@ -54,7 +54,7 @@ async function likeAPost(postId, userId) {
 
     return {
       error: false,
-      message: 'Post liked.',
+      message: 'Successfully liked a post.',
       errorMessage: '',
       code: 200
     };
