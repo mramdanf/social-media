@@ -1,5 +1,7 @@
 const postService = require('../services/postService');
 const userService = require('../services/userService');
+const commentService = require('../services/commentService');
+const { endpointResponse } = require('../utils/misc');
 
 async function createPost(req, res) {
   try {
@@ -76,9 +78,55 @@ async function like(req, res) {
   return res.status(code).json({ error, errorMessage, message });
 }
 
+async function addCommentToPost(req, res) {
+  const { content, postId } = req.body;
+  const userId = req._id;
+
+  try {
+    const comment = await commentService.createComment({
+      content,
+      userId,
+      postId
+    });
+
+    if (!comment._id) {
+      return res.status(500).json(
+        endpointResponse({
+          error: true,
+          errorMessage: 'Failed to create a comment'
+        })
+      );
+    }
+
+    const commentId = comment._id;
+    const result = await postService.addComment(postId, commentId);
+
+    if (!result.modifiedCount) {
+      return res.status(500).json(
+        endpointResponse({
+          error: true,
+          errorMessage: 'Failed to update post comment'
+        })
+      );
+    }
+
+    return res
+      .status(200)
+      .json(endpointResponse({ error: false, message: 'Comment added.' }));
+  } catch (error) {
+    return res.status(500).json(
+      endpointResponse({
+        error: true,
+        errorMessage: error.toString()
+      })
+    );
+  }
+}
+
 module.exports = {
   createPost,
   updateUserPost,
   deleteUserPost,
+  addCommentToPost,
   like
 };

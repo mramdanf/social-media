@@ -56,10 +56,19 @@ async function likeAPost(postId, userId) {
   }
 }
 
+async function addComment(postId, commentId) {
+  const post = await Post.findById(postId);
+  return Post.updateOne(
+    { _id: postId },
+    { comments: [...post.comments, commentId] }
+  );
+}
+
 module.exports = {
   createPost,
   updatePost,
   deletePost,
   findUserPosts,
-  likeAPost
+  likeAPost,
+  addComment
 };

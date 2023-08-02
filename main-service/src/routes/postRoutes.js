@@ -37,5 +37,13 @@ router.put(
   verifyTokenMiddleware,
   postController.like
 );
+router.put(
+  '/comment',
+  body('content').notEmpty(),
+  body('postId').notEmpty(),
+  verifyTokenMiddleware,
+  checkValidationResultMiddleware,
+  postController.addCommentToPost
+);
 
 module.exports = router;

@@ -11,6 +11,12 @@ module.exports = (mongoose) => {
         type: mongoose.Schema.ObjectId,
         ref: 'User'
       }
+    ],
+    comments: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Comment'
+      }
     ]
   });
   const Post = mongoose.model('Post', newSchema);
