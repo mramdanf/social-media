@@ -13,34 +13,28 @@ async function createPost(req, res) {
     const post = req.body;
     const newPost = await postService.createPost(post, userId);
     await userService.addPostToUser(userId, newPost._id);
-    return res.status(200).json({ error: false, message: 'Post created.' });
-  } catch (error) {
     return res
-      .status(500)
-      .json({ error: true, errorMessage: error.toString() });
+      .status(200)
+      .json(endpointSuccessResponse({ message: 'Post created.' }));
+  } catch (error) {
+    return res.status(500).json(endpointErrorResponse(error.toString()));
   }
 }
 
 async function updateUserPost(req, res) {
   try {
-    const result = await postService.updatePost({
+    await postService.updatePost({
       userId: req._id,
       ...req.body
     });
-    if (!result.modifiedCount) {
-      return res
-        .status(404)
-        .json({ error: true, errorMessage: 'Post not found.' });
-    }
 
-    return res.status(200).json({
-      error: false,
-      message: `Post with id ${req.body.id} successfully updated`
-    });
+    return res.status(200).json(
+      endpointSuccessResponse({
+        message: `Post with id ${req.body.id} successfully updated`
+      })
+    );
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: false, errorMessage: error.toString() });
+    return res.status(500).json(endpointErrorResponse(error.toString()));
   }
 }
 
