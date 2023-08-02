@@ -1,7 +1,27 @@
 version: '3.7'
 
 services:
+  main-service:
+    container_name: main-service
+    build:
+      context: ./main-service
+      dockerfile: ./main-service.Dockerfile
+      args:
+        - MONGO_DB_NAME=${MONGO_DB_NAME}
+        - MONGO_DB_ROOT_USERNAME=${MONGO_DB_ROOT_USERNAME}
+        - MONGO_DB_ROOT_PASSWORD=${MONGO_DB_ROOT_PASSWORD}
+        - MONGO_DB_PORT=${MONGO_DB_PORT}
+        - MONGO_DB_HOST=${MONGO_DB_HOST}
+        - MAIN_SERVICE_PORT=${MAIN_SERVICE_PORT}
+        - MAIN_SERVICE_JWT_PRIVATE_KEY=${MAIN_SERVICE_JWT_PRIVATE_KEY}
+    command: sh -c "/wait && npm run db:reset && npm start"
+    ports:
+      - ${MAIN_SERVICE_PORT}:${MAIN_SERVICE_PORT}
+    environment:
+      WAIT_HOSTS: mongo:${MONGO_DB_PORT}
+
   mongo:
+    container_name: mongo
     image: 'mongo:latest'
     ports:
       - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
