@@ -2,23 +2,28 @@ const jwt = require('jsonwebtoken');
 const _get = require('lodash/get');
 const userService = require('../services/userService');
 const { bcryptCompare } = require('../utils/encriptions');
+const {
+  endpointSuccessResponse,
+  endpointErrorResponse
+} = require('../utils/apiResponse');
 require('dotenv').config();
 
 async function signUp(req, res) {
   try {
     const userData = req.body;
     const user = await userService.createUser(userData);
-    res.status(200).json({
-      error: false,
-      message: 'Signup successfull!',
-      user: {
-        _id: user._id,
-        fullName: user.fullName,
-        email: user.email
-      }
-    });
+    res.status(200).json(
+      endpointSuccessResponse({
+        message: 'Signup successfull!',
+        user: {
+          _id: user._id,
+          fullName: user.fullName,
+          email: user.email
+        }
+      })
+    );
   } catch (error) {
-    res.status(500).json({ error: true, errorMessage: error.toString() });
+    res.status(500).json(endpointErrorResponse(error.toString()));
   }
 }
 
@@ -28,7 +33,7 @@ async function login(req, res) {
     const user = await userService.findUserByEmail(userPayload.email);
 
     if (!user) {
-      res.status(401).json({ error: true, errorMessage: 'Invalid credential' });
+      res.status(401).json(endpointErrorResponse('Invalid credential'));
       return;
     }
 
@@ -38,7 +43,7 @@ async function login(req, res) {
     );
 
     if (!validPassword) {
-      res.status(401).json({ error: true, errorMessage: 'Invalid credential' });
+      res.status(401).json(endpointErrorResponse('Invalid credential'));
       return;
     }
 
@@ -48,35 +53,34 @@ async function login(req, res) {
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({
-      error: false,
-      message: 'login success!',
-      user: {
-        _id: user._id,
-        fullName: user.fullName,
-        token
-      }
-    });
+    res.status(200).json(
+      endpointSuccessResponse({
+        message: 'login success!',
+        user: {
+          _id: user._id,
+          fullName: user.fullName,
+          token
+        }
+      })
+    );
   } catch (error) {
-    res.status(500).json({ error: true, errorMessage: error.toString() });
+    res.status(500).json(endpointErrorResponse(error.toString()));
   }
 }
 
 async function update(req, res) {
   try {
-    const result = await userService.updateUser({
-      id: req._id,
-      ...req.body
+    const { _id, ...restPayload } = req.body;
+    await userService.updateUser({
+      _id: req._id,
+      ...restPayload
     });
-    if (!result.modifiedCount) {
-      return res
-        .status(404)
-        .json({ error: true, errorMessage: 'User not found' });
-    }
 
-    return res.status(200).json({ error: false, message: 'User updated' });
+    return res
+      .status(200)
+      .json(endpointSuccessResponse({ message: 'User updated' }));
   } catch (error) {
-    return res.status(500).json({ error: true, message: error.stoString() });
+    return res.status(500).json(endpointErrorResponse(error.toString()));
   }
 }
 

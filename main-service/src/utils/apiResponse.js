@@ -15,16 +15,22 @@ function endpointResponse(response) {
     ...error,
     ...errorMessgae,
     ...message,
-    ...code
+    ...code,
+    ...response
   };
 }
 
-function endpointErrorResponse(message, code = 500) {
-  return endpointErrorResponse({ error: true, errorMessgae: message, code });
+function endpointErrorResponse(message, code) {
+  return endpointResponse({ error: true, errorMessgae: message, code });
 }
 
-function endpointSuccessResponse(message, code = 200) {
-  return endpointErrorResponse({ error: true, errorMessgae: message, code });
+function endpointSuccessResponse({ message, code, ...rest }) {
+  return endpointResponse({
+    error: false,
+    message,
+    code,
+    ...rest
+  });
 }
 
 module.exports = {

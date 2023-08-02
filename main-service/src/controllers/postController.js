@@ -54,11 +54,11 @@ async function deleteUserPost(req, res) {
       return res.status(404).json(endpointErrorResponse('Post not found', 404));
     }
 
-    return res
-      .status(200)
-      .json(
-        endpointSuccessResponse(`Post with id ${postId} successfully deleted`)
-      );
+    return res.status(200).json(
+      endpointSuccessResponse({
+        message: `Post with id ${postId} successfully deleted`
+      })
+    );
   } catch (error) {
     return res.status(500).json({
       error: true,

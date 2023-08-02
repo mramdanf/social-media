@@ -2,14 +2,18 @@ const _get = require('lodash/get');
 const userService = require('../services/userService');
 
 async function checkEmailExist(req, res, next) {
-  const { email } = req.body;
+  const email = _get(req, 'body.email');
+
+  if (!email) {
+    return next();
+  }
 
   const user = await userService.findUserByEmail(email);
   if (!user) {
     return next();
   }
 
-  const prevUserId = _get(req, 'body.id');
+  const prevUserId = _get(req, '_id');
   const foundUserId = _get(user, 'id');
 
   // previous user data, should be valid

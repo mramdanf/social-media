@@ -1,5 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
+const _isEmpty = require('lodash/isEmpty');
 
 const router = express.Router();
 
@@ -28,10 +29,14 @@ router.post(
 
 router.put(
   '/update',
-  body('fullName').notEmpty(),
-  body('email').isEmail().notEmpty(),
-  emailExistMiddleware,
+  body().custom(async (bodyValue) => {
+    if (_isEmpty(bodyValue)) {
+      throw new Error('Should update at least one user field');
+    }
+    return true;
+  }),
   verifyTokenMiddleware,
+  emailExistMiddleware,
   checkValidationResultMiddleware,
   userController.update
 );

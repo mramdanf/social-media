@@ -4,6 +4,10 @@ const {
 } = require('../db/models');
 const { bcryptHas } = require('../utils/encriptions');
 const postService = require('./postService');
+const {
+  endpointErrorResponse,
+  endpointSuccessResponse
+} = require('../utils/apiResponse');
 
 async function createUser(user) {
   const hasdedPassword = await bcryptHas(user.password);
@@ -18,9 +22,18 @@ function findUserByEmail(email) {
   return User.findOne({ email });
 }
 
-function updateUser(payload) {
-  const { id, ...rest } = payload;
-  return User.updateOne({ _id: id }, { ...rest });
+async function updateUser(payload) {
+  const { _id, ...rest } = payload;
+  const password = _get(rest, 'password');
+  let hasdedPassword;
+  if (password) {
+    hasdedPassword = await bcryptHas(password);
+  }
+  const userData = {
+    ...rest,
+    ...(password && { password: hasdedPassword })
+  };
+  return User.updateOne({ _id }, userData);
 }
 
 async function addPostToUser(userId, postId) {
@@ -34,19 +47,11 @@ async function follow(userId, followedUserId) {
     const followedUser = await User.findById(followedUserId).exec();
 
     if (user.following.includes(followedUserId)) {
-      return {
-        error: true,
-        errorMessage: 'Re-follow same user not allowed.',
-        code: 409
-      };
+      return endpointErrorResponse('Re-follow same user not allowed.', 409);
     }
 
     if (!followedUser) {
-      return {
-        error: true,
-        errorMessage: 'No followed user found',
-        code: 404
-      };
+      return endpointErrorResponse('No followed user found', 404);
     }
 
     const updateResult = await User.updateOne(
@@ -55,24 +60,15 @@ async function follow(userId, followedUserId) {
     );
 
     if (!updateResult.modifiedCount) {
-      return {
-        error: true,
-        errorMessage: 'No user found.',
-        code: 404
-      };
+      return endpointErrorResponse('No user found.', 404);
     }
 
-    return {
-      error: false,
+    return endpointSuccessResponse({
       message: `Successfully followed ${followedUser.fullName}`,
       code: 200
-    };
+    });
   } catch (error) {
-    return {
-      error: true,
-      errorMessage: error.toString(),
-      code: 500
-    };
+    return endpointErrorResponse(error.toString(), 500);
   }
 }
 
