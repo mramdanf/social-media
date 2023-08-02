@@ -89,17 +89,39 @@ async function userFeed(keywords, userId) {
   const userFollowingPosts = await User.findById(userId)
     .select('fullName following')
     .populate({
+      // firstly populate following (user)
       path: 'following',
+
       select: 'fullName posts',
       match: { posts: { $exists: true, $ne: [] } }, // exclude following with empty posts
+
+      // inside following (user)
       populate: {
+        // populate following user posts
         path: 'posts',
         select: '_id content',
         ...(keywords ? { match: { content: regexTemplate } } : {}), // search by keywords if any
-        populate: {
-          path: 'user',
-          select: '_id fullName'
-        }
+
+        // inside user posts
+        populate: [
+          // populate user on the post
+          {
+            path: 'user',
+            select: '_id fullName'
+          },
+          // populate comments on the post
+          {
+            path: 'comments',
+            select: '_id content',
+            // inside comment populate comment's author
+            populate: { path: 'author', select: '_id fullName' }
+          },
+          // populate likedBy on the post
+          {
+            path: 'likedBy',
+            select: '_id fullName'
+          }
+        ]
       }
     });
 

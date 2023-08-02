@@ -17,10 +17,22 @@ function deletePost(payload) {
 }
 
 function findUserPosts(options) {
-  return Post.find(options).select('_id content').populate({
-    path: 'user',
-    select: '_id fullName'
-  });
+  return Post.find(options)
+    .select('_id content')
+    .populate([
+      {
+        path: 'user',
+        select: '_id fullName'
+      },
+      {
+        path: 'comments',
+        select: '_id content'
+      },
+      {
+        path: 'likedBy',
+        select: '_id fullName'
+      }
+    ]);
 }
 
 async function likeAPost(postId, userId) {
