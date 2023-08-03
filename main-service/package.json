@@ -22,10 +22,10 @@
     "lodash": "^4.17.21",
     "mongoose": "^7.4.1",
     "swagger-ui-express": "^5.0.0",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "@faker-js/faker": "^8.0.2"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.0.2",
     "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-node": "^4.1.0",
