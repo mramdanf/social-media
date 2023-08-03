@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  main-service:
+    container_name: main-service
+    image: 134637729575.dkr.ecr.ap-southeast-2.amazonaws.com/social-media:1.0.0
+    command: sh -c "/wait && npm run db:reset && npm start"
+    ports:
+      - ${MAIN_SERVICE_PORT}:${MAIN_SERVICE_PORT}
+    environment:
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      MONGO_DB_ROOT_USERNAME: ${MONGO_DB_ROOT_USERNAME}
+      MONGO_DB_ROOT_PASSWORD: ${MONGO_DB_ROOT_PASSWORD}
+      MONGO_DB_PORT: ${MONGO_DB_PORT}
+      MONGO_DB_HOST: ${MONGO_DB_HOST}
+      MAIN_SERVICE_PORT: ${MAIN_SERVICE_PORT}
+      MAIN_SERVICE_JWT_PRIVATE_KEY: ${MAIN_SERVICE_JWT_PRIVATE_KEY}
+      WAIT_HOSTS: mongo:${MONGO_DB_PORT}
+
+  mongo:
+    container_name: mongo
+    image: 'mongo:latest'
+    ports:
+      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_ROOT_PASSWORD}
