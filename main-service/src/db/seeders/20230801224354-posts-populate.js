@@ -38,7 +38,9 @@ module.exports = {
         console.log(error.toString());
       }
     });
-    return models.User.find();
+    return models.Post.find().then((res) =>
+      console.log('post created: ', res.length)
+    );
   },
 
   down: async (models) =>
