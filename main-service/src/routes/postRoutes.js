@@ -3,7 +3,7 @@ const { body, param } = require('express-validator');
 
 const verifyTokenMiddleware = require('../middlewares/verifyToken');
 const checkValidationResultMiddleware = require('../middlewares/checkValidationResult');
-const uploadMiddleware = require('../middlewares/multerUpload');
+const uploadImageS3Middleware = require('../middlewares/uploadImageS3');
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ const postController = require('../controllers/postController');
 
 router.post(
   '/',
-  uploadMiddleware.single('image'),
+  uploadImageS3Middleware.single('image'),
   body('content').notEmpty(),
   verifyTokenMiddleware,
   checkValidationResultMiddleware,

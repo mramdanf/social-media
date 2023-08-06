@@ -22,7 +22,7 @@ function deletePost(payload) {
 
 function findUserPosts(options) {
   return Post.find(options)
-    .select('_id content')
+    .select('_id content image')
     .populate([
       {
         path: 'user',
