@@ -19,6 +19,7 @@ router.post(
 );
 router.put(
   '/',
+  uploadImageS3Middleware.single('image'),
   body('content').notEmpty(),
   body('id').isAlphanumeric().notEmpty(),
   verifyTokenMiddleware,

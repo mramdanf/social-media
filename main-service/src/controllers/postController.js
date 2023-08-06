@@ -1,3 +1,4 @@
+const _get = require('lodash/get');
 const postService = require('../services/postService');
 const userService = require('../services/userService');
 const commentService = require('../services/commentService');
@@ -27,10 +28,21 @@ async function createPost(req, res) {
 
 async function updateUserPost(req, res) {
   try {
-    await postService.updatePost({
-      userId: req._id,
-      ...req.body
-    });
+    const { id, ...rest } = req.body;
+
+    // if user update the image will delete the old one
+    const newImage = _get(req, 'file.location');
+    const oldPost = await postService.findPostById(id);
+
+    if (!oldPost) {
+      return res.status(404).json(endpointErrorResponse('Post not found', 404));
+    }
+
+    if (newImage && oldPost.image) {
+      await s3Service.deletePostImageOnS3(oldPost.image);
+    }
+
+    await postService.updatePost(id, { ...rest, image: newImage });
 
     return res.status(200).json(
       endpointSuccessResponse({

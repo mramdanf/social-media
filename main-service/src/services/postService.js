@@ -10,9 +10,8 @@ function createPost(post, userId) {
   return Post.create({ ...post, user: userId });
 }
 
-function updatePost(payload) {
-  const { id, userId, ...rest } = payload;
-  return Post.updateOne({ _id: id, user: userId }, { ...rest });
+function updatePost(id, payload) {
+  return Post.updateOne({ _id: id }, payload);
 }
 
 function deletePost(payload) {

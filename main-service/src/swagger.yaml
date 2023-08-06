@@ -207,6 +207,9 @@ paths:
         schema:
           type: "object"
           properties:
+            id:
+              type: "string"
+              example: "64c9c3bba2ff9d64966bc180"
             content:
               type: "string"
               example: "Hey there this is my first post"
