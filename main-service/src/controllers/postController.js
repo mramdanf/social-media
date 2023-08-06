@@ -1,6 +1,7 @@
 const postService = require('../services/postService');
 const userService = require('../services/userService');
 const commentService = require('../services/commentService');
+const s3Service = require('../services/S3Service');
 const {
   endpointResponse,
   endpointErrorResponse,
@@ -45,11 +46,18 @@ async function deleteUserPost(req, res) {
   try {
     const userId = req._id;
     const { postId } = req.params;
-    const result = await postService.deletePost({ id: postId, userId });
 
-    if (!result.deletedCount) {
+    const post = await postService.findPostById(postId);
+
+    if (!post) {
       return res.status(404).json(endpointErrorResponse('Post not found', 404));
     }
+
+    if (post.image) {
+      await s3Service.deletePostImageOnS3(post.image);
+    }
+
+    await postService.deletePost({ id: postId, userId });
 
     return res.status(200).json(
       endpointSuccessResponse({

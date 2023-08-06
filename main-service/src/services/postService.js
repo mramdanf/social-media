@@ -73,11 +73,16 @@ async function addComment(postId, commentId) {
   );
 }
 
+function findPostById(postId) {
+  return Post.findById(postId);
+}
+
 module.exports = {
   createPost,
   updatePost,
   deletePost,
   findUserPosts,
   likeAPost,
-  addComment
+  addComment,
+  findPostById
 };

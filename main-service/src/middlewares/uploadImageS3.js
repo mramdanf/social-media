@@ -1,24 +1,11 @@
 const path = require('path');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-const { S3Client } = require('@aws-sdk/client-s3');
-
-require('dotenv').config();
-
-const { AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION } =
-  process.env;
-
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: AWS_ACCESS_KEY,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY
-  },
-  region: AWS_DEFAULT_REGION
-});
+const { getS3Client, POST_IMAGES_BUCKET } = require('../services/S3Service');
 
 const s3Storage = multerS3({
-  s3,
-  bucket: 'social-media-post-images',
+  s3: getS3Client(),
+  bucket: POST_IMAGES_BUCKET,
   metadata: (req, file, cb) => {
     cb(null, { fieldname: file.fieldname });
   },
