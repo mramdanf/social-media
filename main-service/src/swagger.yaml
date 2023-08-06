@@ -166,17 +166,19 @@ paths:
       tags:
       - "Post"
       summary: "Create a user post"
+      consumes:
+        - multipart/form-data
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Post data"
+      - in: formData
+        name: image
+        type: file
+        description: "Post image"
         required: true
-        schema:
-          type: "object"
-          properties:
-            content:
-              type: "string"
-              example: "Hey there this is my first post"
+      - in: formData
+        name: content
+        type: string
+        description: "Post content"
+        required: true
       - in: "header"
         name: "token"
         description: "Token obtained after logged in"
