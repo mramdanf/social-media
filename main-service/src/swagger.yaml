@@ -200,19 +200,20 @@ paths:
       - "Post"
       summary: "Update user post"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "New post data"
+      - in: formData
+        name: image
+        type: file
+        description: "Post image"
+      - in: formData
+        name: id
+        type: string
+        description: "Post id to be updated"
         required: true
-        schema:
-          type: "object"
-          properties:
-            id:
-              type: "string"
-              example: "64c9c3bba2ff9d64966bc180"
-            content:
-              type: "string"
-              example: "Hey there this is my first post"
+      - in: formData
+        name: content
+        type: string
+        description: "Post content"
+        required: true
       - in: "header"
         name: "token"
         description: "Token obtained after logged in"
