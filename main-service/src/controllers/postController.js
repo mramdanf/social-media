@@ -18,6 +18,12 @@ async function createPost(req, res) {
     };
     const newPost = await postService.createPost(post, userId);
     await userService.addPostToUser(userId, newPost._id);
+
+    const postImage = _get(req, 'file.filename');
+    if (postImage) {
+      await s3Service.savePostImageOnS3(postImage);
+    }
+
     return res
       .status(200)
       .json(endpointSuccessResponse({ message: 'Post created.' }));
@@ -29,10 +35,11 @@ async function createPost(req, res) {
 async function updateUserPost(req, res) {
   try {
     const { id, ...rest } = req.body;
+    const userId = req._id;
 
     // if user update the image will delete the old one
     const newImage = _get(req, 'file.location');
-    const oldPost = await postService.findPostById(id);
+    const oldPost = await postService.findOneUserPost(id, userId);
 
     if (!oldPost) {
       return res.status(404).json(endpointErrorResponse('Post not found', 404));
@@ -42,7 +49,11 @@ async function updateUserPost(req, res) {
       await s3Service.deletePostImageOnS3(oldPost.image);
     }
 
-    await postService.updatePost(id, { ...rest, image: newImage });
+    await postService.updatePost(id, {
+      ...rest,
+      user: userId,
+      image: newImage
+    });
 
     return res.status(200).json(
       endpointSuccessResponse({

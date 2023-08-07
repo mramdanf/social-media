@@ -1,15 +1,24 @@
-const path = require('path');
 const multer = require('multer');
+const { sanitizeFile } = require('../utils/fileUpload');
+
+const TMP_IMAGES = 'src/tmp/images';
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'public/images');
+    cb(null, TMP_IMAGES);
   },
-  filename(req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+  fileFilter: (req, file, callback) => {
+    sanitizeFile(file, callback);
+  },
+  filename: (req, file, cb) => {
+    const fileName = `${Date.now()}_${file.fieldname}_${file.originalname}`;
+    cb(null, fileName);
   }
 });
 
 const upload = multer({ storage });
 
-module.exports = upload;
+module.exports = {
+  upload,
+  TMP_IMAGES
+};

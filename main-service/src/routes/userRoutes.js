@@ -11,9 +11,9 @@ const checkValidationResultMiddleware = require('../middlewares/checkValidationR
 
 router.post(
   '/sign-up',
-  body('fullName').notEmpty(),
-  body('password').notEmpty(),
+  body('fullName').notEmpty().isAlpha(),
   body('email').isEmail().notEmpty(),
+  body('password').notEmpty(),
   emailExistMiddleware,
   checkValidationResultMiddleware,
   userController.signUp

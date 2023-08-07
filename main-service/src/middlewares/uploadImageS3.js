@@ -1,7 +1,7 @@
-const path = require('path');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const { getS3Client, POST_IMAGES_BUCKET } = require('../services/S3Service');
+const { sanitizeFile } = require('../utils/fileUpload');
 
 const s3Storage = multerS3({
   s3: getS3Client(),
@@ -15,23 +15,6 @@ const s3Storage = multerS3({
   }
 });
 
-const sanitizeFile = (file, cb) => {
-  const fileExts = ['.png', '.jpg', '.jpeg', '.gif'];
-
-  const isAllowedExt = fileExts.includes(
-    path.extname(file.originalname.toLowerCase())
-  );
-
-  const isAllowedMimeType = file.mimetype.startsWith('image/');
-
-  if (isAllowedExt && isAllowedMimeType) {
-    return cb(null, true);
-  }
-
-  return cb('Error: File type not allowed!');
-};
-
-// our middleware
 const uploadImage = multer({
   storage: s3Storage,
   fileFilter: (req, file, callback) => {

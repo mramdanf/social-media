@@ -76,6 +76,10 @@ function findPostById(postId) {
   return Post.findById(postId);
 }
 
+function findOneUserPost(postId, userId) {
+  return Post.findOne({ _id: postId, user: userId });
+}
+
 module.exports = {
   createPost,
   updatePost,
@@ -83,5 +87,6 @@ module.exports = {
   findUserPosts,
   likeAPost,
   addComment,
-  findPostById
+  findPostById,
+  findOneUserPost
 };

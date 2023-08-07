@@ -1,4 +1,10 @@
-const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const fs = require('fs');
+const {
+  S3Client,
+  DeleteObjectCommand,
+  PutObjectCommand
+} = require('@aws-sdk/client-s3');
+const { deleteTmpImages, tmpImagePathFactory } = require('../utils/fileUpload');
 
 require('dotenv').config();
 
@@ -26,8 +32,22 @@ function deletePostImageOnS3(imageUrl) {
   return s3.send(command);
 }
 
+async function savePostImageOnS3(imageName) {
+  const s3 = getS3Client();
+  const tmpImagePath = tmpImagePathFactory(imageName);
+  const fileContent = fs.readFileSync(tmpImagePath);
+  const command = new PutObjectCommand({
+    Bucket: POST_IMAGES_BUCKET,
+    Key: imageName,
+    Body: fileContent
+  });
+  await s3.send(command);
+  deleteTmpImages(imageName);
+}
+
 module.exports = {
   getS3Client,
   deletePostImageOnS3,
+  savePostImageOnS3,
   POST_IMAGES_BUCKET
 };
