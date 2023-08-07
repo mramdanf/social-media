@@ -31,7 +31,7 @@ router.put(
     .custom(async (value, { req }) => {
       const postExist = await postService.findOneUserPost(value, req._id);
       if (!postExist) {
-        throw new Error('Invalid post id.');
+        throw new Error('Invalid id (post id).');
       }
     }),
   body('content').notEmpty().withMessage('content cannot be empty'),
@@ -49,7 +49,7 @@ router.delete(
     .custom(async (value, { req }) => {
       const postExist = await postService.findOneUserPost(value, req._id);
       if (!postExist) {
-        throw new Error('Invalid post id.');
+        throw new Error('Invalid postId.');
       }
     }),
   checkValidationResultMiddleware,
@@ -63,7 +63,7 @@ router.put(
     .custom(async (value) => {
       const postExist = await postService.findPostById(value);
       if (!postExist) {
-        throw new Error('Invalid post id.');
+        throw new Error('Invalid postId.');
       }
     }),
   checkValidationResultMiddleware,
@@ -73,7 +73,17 @@ router.put(
 router.post(
   '/comment',
   body('content').notEmpty().withMessage('comment conent cannot be empty'),
-  body('postId').notEmpty().withMessage('postId cannot be empty'),
+  body('postId')
+    .notEmpty()
+    .withMessage('postId cannot be empty')
+    .isAlphanumeric()
+    .withMessage('postId should be alphanumeric')
+    .custom(async (value) => {
+      const postExist = await postService.findPostById(value);
+      if (!postExist) {
+        throw new Error('Invalid postId.');
+      }
+    }),
   verifyTokenMiddleware,
   checkValidationResultMiddleware,
   postController.addCommentToPost
