@@ -23,11 +23,15 @@ function getS3Client() {
   });
 }
 
+function getImageNameFromUrl(imageUrl) {
+  return imageUrl.split('/').pop();
+}
+
 function deletePostImageOnS3(imageUrl) {
   const s3 = getS3Client();
   const command = new DeleteObjectCommand({
     Bucket: POST_IMAGES_BUCKET,
-    Key: imageUrl.split('/').pop()
+    Key: getImageNameFromUrl(imageUrl)
   });
   return s3.send(command);
 }

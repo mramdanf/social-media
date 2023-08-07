@@ -39,21 +39,21 @@ async function updateUserPost(req, res) {
     const userId = req._id;
 
     // if user update the image will delete the old one
-    const newImage = _get(req, 'file.location');
+    const newImage = _get(req, 'file.filename');
     const oldPost = await postService.findOneUserPost(id, userId);
-
-    if (!oldPost) {
-      return res.status(404).json(endpointErrorResponse('Post not found', 404));
-    }
 
     if (newImage && oldPost.image) {
       await s3Service.deletePostImageOnS3(oldPost.image);
     }
 
+    if (newImage) {
+      await s3Service.savePostImageOnS3(newImage);
+    }
+
     await postService.updatePost(id, {
       ...rest,
       user: userId,
-      image: newImage
+      image: newImage ? s3Service.getPostImageUrl(newImage) : undefined
     });
 
     return res.status(200).json(

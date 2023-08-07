@@ -15,7 +15,7 @@ router.post(
   '/',
   verifyTokenMiddleware,
   upload.single('image'),
-  body('content').notEmpty(),
+  body('content').notEmpty().withMessage('content cannot be empty'),
   checkValidationResultMiddleware,
   postController.createPost
 );
@@ -24,15 +24,17 @@ router.put(
   verifyTokenMiddleware,
   upload.single('image'),
   body('id')
-    .isAlphanumeric()
     .notEmpty()
+    .withMessage('id (post id) should not be empty')
+    .isAlphanumeric()
+    .withMessage('id (post id) should be alphanumeric')
     .custom(async (value, { req }) => {
       const postExist = await postService.findOneUserPost(value, req._id);
       if (!postExist) {
         throw new Error('Invalid post id.');
       }
     }),
-  body('content').notEmpty(),
+  body('content').notEmpty().withMessage('content cannot be empty'),
   checkValidationResultMiddleware,
   postController.updateUserPost
 );
@@ -45,15 +47,15 @@ router.delete(
 );
 router.put(
   '/like',
-  body('postId').notEmpty(),
+  body('postId').notEmpty().withMessage('postId cannot be empty'),
   checkValidationResultMiddleware,
   verifyTokenMiddleware,
   postController.like
 );
 router.post(
   '/comment',
-  body('content').notEmpty(),
-  body('postId').notEmpty(),
+  body('content').notEmpty().withMessage('comment conent cannot be empty'),
+  body('postId').notEmpty().withMessage('postId cannot be empty'),
   verifyTokenMiddleware,
   checkValidationResultMiddleware,
   postController.addCommentToPost
