@@ -73,10 +73,6 @@ async function deleteUserPost(req, res) {
 
     const post = await postService.findPostById(postId);
 
-    if (!post) {
-      return res.status(404).json(endpointErrorResponse('Post not found', 404));
-    }
-
     if (post.image) {
       await s3Service.deletePostImageOnS3(post.image);
     }

@@ -40,8 +40,18 @@ router.put(
 );
 router.delete(
   '/:postId',
-  param('postId').isAlphanumeric().notEmpty(),
   verifyTokenMiddleware,
+  param('postId')
+    .notEmpty()
+    .withMessage('postId should not be empty')
+    .isAlphanumeric()
+    .withMessage('postId should be alphanumeric')
+    .custom(async (value, { req }) => {
+      const postExist = await postService.findOneUserPost(value, req._id);
+      if (!postExist) {
+        throw new Error('Invalid post id.');
+      }
+    }),
   checkValidationResultMiddleware,
   postController.deleteUserPost
 );
