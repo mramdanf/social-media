@@ -9,9 +9,7 @@ function checkValidationResult(req, res, next) {
     if (file) {
       deleteTmpImages(file);
     }
-    return res
-      .status(400)
-      .json({ error: true, errorMessage: JSON.stringify(errors.array()) });
+    return res.status(400).json({ error: true, errorMessage: errors.array() });
   }
 
   return next();

@@ -133,11 +133,16 @@ async function userFeed(keywords, userId) {
   return allPosts;
 }
 
+function findUserById(userId) {
+  return User.findById(userId);
+}
+
 module.exports = {
   createUser,
   findUserByEmail,
   updateUser,
   addPostToUser,
   follow,
-  userFeed
+  userFeed,
+  findUserById
 };
