@@ -20,7 +20,7 @@ async function createPost(req, res) {
 
     const post = {
       ...req.body,
-      image: s3Service.getPostImageUrl(postImage)
+      image: postImage ? s3Service.getPostImageUrl(postImage) : undefined
     };
     const newPost = await postService.createPost(post, userId);
     await userService.addPostToUser(userId, newPost._id);
