@@ -1,7 +1,5 @@
 const multer = require('multer');
-const { sanitizeFile } = require('../utils/fileUpload');
-
-const TMP_IMAGES = 'src/tmp/images';
+const { sanitizeFile, TMP_IMAGES } = require('../utils/fileUpload');
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -19,6 +17,5 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 module.exports = {
-  upload,
-  TMP_IMAGES
+  upload
 };

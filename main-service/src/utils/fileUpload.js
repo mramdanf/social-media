@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
-const { TMP_IMAGES } = require('../middlewares/multerUpload');
+
+const TMP_IMAGES = 'src/tmp/images';
 
 const sanitizeFile = (file, cb) => {
   const fileExts = ['.png', '.jpg', '.jpeg', '.gif'];
@@ -29,5 +30,6 @@ function deleteTmpImages(imageName) {
 module.exports = {
   sanitizeFile,
   deleteTmpImages,
-  tmpImagePathFactory
+  tmpImagePathFactory,
+  TMP_IMAGES
 };
