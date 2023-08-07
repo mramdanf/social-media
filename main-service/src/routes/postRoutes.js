@@ -57,7 +57,15 @@ router.delete(
 );
 router.put(
   '/like',
-  body('postId').notEmpty().withMessage('postId cannot be empty'),
+  body('postId')
+    .notEmpty()
+    .withMessage('postId cannot be empty')
+    .custom(async (value) => {
+      const postExist = await postService.findPostById(value);
+      if (!postExist) {
+        throw new Error('Invalid post id.');
+      }
+    }),
   checkValidationResultMiddleware,
   verifyTokenMiddleware,
   postController.like
