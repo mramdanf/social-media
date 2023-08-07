@@ -41,13 +41,20 @@ async function savePostImageOnS3(imageName) {
     Key: imageName,
     Body: fileContent
   });
-  await s3.send(command);
+  const uploadRes = await s3.send(command);
   deleteTmpImages(imageName);
+
+  return uploadRes;
+}
+
+function getPostImageUrl(imageName) {
+  return `https://social-media-post-images.s3.us-west-1.amazonaws.com/${imageName}`;
 }
 
 module.exports = {
   getS3Client,
   deletePostImageOnS3,
   savePostImageOnS3,
+  getPostImageUrl,
   POST_IMAGES_BUCKET
 };

@@ -12,17 +12,18 @@ const {
 async function createPost(req, res) {
   try {
     const userId = req._id;
-    const post = {
-      ...req.body,
-      image: req.file.location
-    };
-    const newPost = await postService.createPost(post, userId);
-    await userService.addPostToUser(userId, newPost._id);
-
     const postImage = _get(req, 'file.filename');
+
     if (postImage) {
       await s3Service.savePostImageOnS3(postImage);
     }
+
+    const post = {
+      ...req.body,
+      image: s3Service.getPostImageUrl(postImage)
+    };
+    const newPost = await postService.createPost(post, userId);
+    await userService.addPostToUser(userId, newPost._id);
 
     return res
       .status(200)

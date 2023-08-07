@@ -95,7 +95,7 @@ async function userFeed(keywords, userId) {
       populate: {
         // populate following user posts
         path: 'posts',
-        select: '_id content',
+        select: '_id content image',
         ...(keywords ? { match: { content: regexTemplate } } : {}), // search by keywords if any
 
         // inside user posts
